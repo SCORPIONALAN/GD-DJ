@@ -7,8 +7,7 @@ import { rateLimit } from 'express-rate-limit';
 
 import connectDB from './config/db.js';
 
-// ─── Middleware propios (se agregan en la siguiente pieza) ───────────────────
-// import { sanitize } from './middleware/sanitize.js';
+import { sanitize } from './middleware/sanitize.js';
 
 // ─── Rutas de autenticacion ──────────────────────────────────────────────────
 // import authRoutes from './routes/auth.js';
@@ -73,8 +72,8 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // ─── Logging en desarrollo ────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-// ─── Sanitizacion global (se activa en la siguiente pieza) ───────────────────
-// app.use(sanitize);
+// ─── Sanitizacion global ──────────────────────────────────────────────────────
+app.use(sanitize);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {

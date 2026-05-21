@@ -1,30 +1,23 @@
 {
-  "name": "gd-dj-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "Backend REST para la plataforma DJ-GD",
-  "type": "module",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "seed": "node utils/seed.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cloudinary": "^2.5.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "helmet": "^7.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-rate-limit": "^7.3.1",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mercadopago": "^2.0.15",
-    "mongoose": "^8.5.1",
     "morgan": "^1.10.0",
-    "multer": "^2.0.0",
-    "slugify": "^1.6.6"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
+    "express-rate-limit": "^7.0.0",
+    "mongoose": "^8.0.0",
+    "cloudinary": "^2.0.0"
   }
 }
