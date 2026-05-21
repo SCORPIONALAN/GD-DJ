@@ -4,9 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
-
 import connectDB from './config/db.js';
-
 import { sanitize } from './middleware/sanitize.js';
 
 // ─── Rutas de autenticacion ──────────────────────────────────────────────────
