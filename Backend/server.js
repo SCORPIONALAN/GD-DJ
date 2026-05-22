@@ -4,32 +4,33 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
+
 import connectDB from './config/db.js';
 import { sanitize } from './middleware/sanitize.js';
 
 // ─── Rutas de autenticacion ──────────────────────────────────────────────────
-// import authRoutes from './routes/auth.js';
+import authRoutes from './routes/auth.js';
 
 // ─── Rutas de administracion ─────────────────────────────────────────────────
-// import adminBlogRoutes     from './routes/admin/blog.js';
-// import adminBookingRoutes  from './routes/admin/bookings.js';
-// import adminConfigRoutes   from './routes/admin/config.js';
-// import adminFaqRoutes      from './routes/admin/faqs.js';
-// import adminLeadRoutes     from './routes/admin/leads.js';
-// import adminProductRoutes  from './routes/admin/products.js';
-// import adminReviewRoutes   from './routes/admin/reviews.js';
-// import adminSaleRoutes     from './routes/admin/sales.js';
-// import adminServiceRoutes  from './routes/admin/services.js';
+import adminBlogRoutes     from './routes/admin/blog.js';
+import adminBookingRoutes  from './routes/admin/bookings.js';
+import adminConfigRoutes   from './routes/admin/config.js';
+import adminFaqRoutes      from './routes/admin/faqs.js';
+import adminLeadRoutes     from './routes/admin/leads.js';
+import adminProductRoutes  from './routes/admin/products.js';
+import adminReviewRoutes   from './routes/admin/reviews.js';
+import adminSaleRoutes     from './routes/admin/sales.js';
+import adminServiceRoutes  from './routes/admin/services.js';
 
 // ─── Rutas publicas ──────────────────────────────────────────────────────────
-// import publicBlogRoutes     from './routes/public/blog.js';
-// import publicBookingRoutes  from './routes/public/bookings.js';
-// import publicConfigRoutes   from './routes/public/config.js';
-// import publicFaqRoutes      from './routes/public/faqs.js';
-// import publicLeadRoutes     from './routes/public/leads.js';
-// import publicProductRoutes  from './routes/public/products.js';
-// import publicReviewRoutes   from './routes/public/reviews.js';
-// import publicServiceRoutes  from './routes/public/services.js';
+import publicBlogRoutes     from './routes/public/blog.js';
+import publicBookingRoutes  from './routes/public/bookings.js';
+import publicConfigRoutes   from './routes/public/config.js';
+import publicFaqRoutes      from './routes/public/faqs.js';
+import publicLeadRoutes     from './routes/public/leads.js';
+import publicProductRoutes  from './routes/public/products.js';
+import publicReviewRoutes   from './routes/public/reviews.js';
+import publicServiceRoutes  from './routes/public/services.js';
 
 const app = express();
 
@@ -38,7 +39,7 @@ app.use(helmet());
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin:  process.env.CLIENT_URL,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 }));
@@ -78,29 +79,29 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', env: process.env.NODE_ENV });
 });
 
-// ─── Rutas ───────────────────────────────────────────────────────────────────
-// app.use('/api/auth', authRoutes);
+// ─── Autenticacion ────────────────────────────────────────────────────────────
+app.use('/api/auth', authRoutes);
 
-// Admin
-// app.use('/api/admin/blog',     adminBlogRoutes);
-// app.use('/api/admin/bookings', adminBookingRoutes);
-// app.use('/api/admin/config',   adminConfigRoutes);
-// app.use('/api/admin/faqs',     adminFaqRoutes);
-// app.use('/api/admin/leads',    adminLeadRoutes);
-// app.use('/api/admin/products', adminProductRoutes);
-// app.use('/api/admin/reviews',  adminReviewRoutes);
-// app.use('/api/admin/sales',    adminSaleRoutes);
-// app.use('/api/admin/services', adminServiceRoutes);
+// ─── Admin ────────────────────────────────────────────────────────────────────
+app.use('/api/admin/blog',     adminBlogRoutes);
+app.use('/api/admin/bookings', adminBookingRoutes);
+app.use('/api/admin/config',   adminConfigRoutes);
+app.use('/api/admin/faqs',     adminFaqRoutes);
+app.use('/api/admin/leads',    adminLeadRoutes);
+app.use('/api/admin/products', adminProductRoutes);
+app.use('/api/admin/reviews',  adminReviewRoutes);
+app.use('/api/admin/sales',    adminSaleRoutes);
+app.use('/api/admin/services', adminServiceRoutes);
 
-// Publicas
-// app.use('/api/public/blog',     publicBlogRoutes);
-// app.use('/api/public/bookings', publicBookingRoutes);
-// app.use('/api/public/config',   publicConfigRoutes);
-// app.use('/api/public/faqs',     publicFaqRoutes);
-// app.use('/api/public/leads',    publicLeadRoutes);
-// app.use('/api/public/products', publicProductRoutes);
-// app.use('/api/public/reviews',  publicReviewRoutes);
-// app.use('/api/public/services', publicServiceRoutes);
+// ─── Publicas ─────────────────────────────────────────────────────────────────
+app.use('/api/public/blog',     publicBlogRoutes);
+app.use('/api/public/bookings', publicBookingRoutes);
+app.use('/api/public/config',   publicConfigRoutes);
+app.use('/api/public/faqs',     publicFaqRoutes);
+app.use('/api/public/leads',    publicLeadRoutes);
+app.use('/api/public/products', publicProductRoutes);
+app.use('/api/public/reviews',  publicReviewRoutes);
+app.use('/api/public/services', publicServiceRoutes);
 
 // ─── 404 ──────────────────────────────────────────────────────────────────────
 app.use((req, res) => {

@@ -1,28 +1,32 @@
-// Reglas de validacion — cada regla recibe el valor y devuelve un mensaje de error o undefined
+// Accede a valores anidados con notacion de punto: 'client.name' → obj.client.name
+const getNestedValue = (obj, path) =>
+  path.split('.').reduce((current, key) => current?.[key], obj);
 
 export const r = {
   required: () => (v) => {
     if (v === undefined || v === null || v === '') return 'Este campo es obligatorio';
+    // Rechaza objetos planos — ningun campo deberia recibir un objeto despues de sanitizar
+    if (!Array.isArray(v) && typeof v === 'object') return 'Este campo es obligatorio';
   },
 
   email: () => (v) => {
-    if (!v) return;
+    if (!v || typeof v !== 'string') return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Debe ser un email valido';
   },
 
   mongoId: () => (v) => {
     if (!v) return;
-    if (!/^[a-fA-F0-9]{24}$/.test(v)) return 'ID invalido';
+    if (!/^[a-fA-F0-9]{24}$/.test(String(v))) return 'ID invalido';
   },
 
   minLength: (n) => (v) => {
-    if (!v) return;
-    if (String(v).length < n) return `Minimo ${n} caracteres`;
+    if (!v || typeof v !== 'string') return;
+    if (v.length < n) return `Minimo ${n} caracteres`;
   },
 
   maxLength: (n) => (v) => {
-    if (!v) return;
-    if (String(v).length > n) return `Maximo ${n} caracteres`;
+    if (!v || typeof v !== 'string') return;
+    if (v.length > n) return `Maximo ${n} caracteres`;
   },
 
   isIn: (values) => (v) => {
@@ -69,14 +73,16 @@ export const r = {
 };
 
 // Middleware — recibe un esquema { campo: [regla, regla, ...] }
-// Combina req.body + req.query + req.params para evaluar
+// Soporta notacion de punto para campos anidados: 'client.name', 'author.email'
 export const validate = (schema) => (req, res, next) => {
   const data   = { ...req.params, ...req.query, ...req.body };
   const errors = {};
 
   for (const [field, rules] of Object.entries(schema)) {
+    const value = field.includes('.') ? getNestedValue(data, field) : data[field];
+
     for (const rule of rules) {
-      const msg = rule(data[field]);
+      const msg = rule(value);
       if (msg) {
         errors[field] = msg;
         break;
