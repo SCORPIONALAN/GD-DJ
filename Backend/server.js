@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { rateLimit } from 'express-rate-limit';
 
@@ -63,6 +64,9 @@ const authLimiter = rateLimit({
   message: { message: 'Demasiados intentos, intenta de nuevo mas tarde' },
 });
 app.use('/api/auth', authLimiter);
+
+// ─── Cookies ──────────────────────────────────────────────────────────────────
+app.use(cookieParser());
 
 // ─── Body parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));

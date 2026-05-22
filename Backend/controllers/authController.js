@@ -2,10 +2,23 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import Admin from '../models/Admin.js';
 
+const COOKIE_NAME = 'gd_token';
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 días en ms
+
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
+
+/** Setea la cookie httpOnly con el token */
+const setTokenCookie = (res, token) => {
+  res.cookie(COOKIE_NAME, token, {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    maxAge:   COOKIE_MAX_AGE,
+  });
+};
 
 // POST /api/auth/login
 export const login = async (req, res) => {
@@ -30,9 +43,9 @@ export const login = async (req, res) => {
     await admin.save({ validateBeforeSave: false });
 
     const token = signToken(admin._id);
+    setTokenCookie(res, token);
 
     res.json({
-      token,
       admin: {
         id:    admin._id,
         name:  admin.name,
@@ -59,9 +72,9 @@ export const register = async (req, res) => {
     const admin = await Admin.create({ name, email, password, role });
 
     const token = signToken(admin._id);
+    setTokenCookie(res, token);
 
     res.status(201).json({
-      token,
       admin: {
         id:    admin._id,
         name:  admin.name,
@@ -84,6 +97,16 @@ export const me = (req, res) => {
     role:      req.admin.role,
     lastLogin: req.admin.lastLogin,
   });
+};
+
+// POST /api/auth/logout
+export const logout = (req, res) => {
+  res.clearCookie(COOKIE_NAME, {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+  });
+  res.json({ message: 'Sesion cerrada correctamente' });
 };
 
 // PATCH /api/auth/change-password

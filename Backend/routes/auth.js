@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { login, register, me, changePassword } from '../controllers/authController.js';
+import { login, register, me, logout, changePassword } from '../controllers/authController.js';
 import { protect, authorize } from '../middleware/auth.js';
 import { validate, r } from '../middleware/validate.js';
 
@@ -30,6 +30,8 @@ router.post(
 );
 
 router.get('/me', protect, me);
+
+router.post('/logout', protect, logout);
 
 router.patch(
   '/change-password',
